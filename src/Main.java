@@ -37,111 +37,78 @@ public class Main {
 
     // 3. encryptThis
     public static String encryptThis(String str){
-        String totalString = "";
-        int ascii;
-        int charNum = 0;
-        int lastChar = 0;
-        int twoIndex = 0;
-
-        for (int i = 0; i < str.length(); i++){
-            charNum++;
-
-            for (int j = i; j < str.length(); j++){
-                if (str.charAt(j) == ' '){
-                    lastChar = j-1;
-                    break;
-                }
-                if (j == str.length()-1){
-                    lastChar = j;
-                }
+        String result = "";
+        int start = 0;
+        int end = str.indexOf(" ");
+        while (end >= 0) {
+            String word = str.substring(start, end);
+            int code = (int) word.charAt(0);
+            char last = word.charAt(word.length() - 1);
+            if (word.length() > 2) {
+                char second = word.charAt(1);
+                word = code + "" + last + word.substring(2, word.length() - 1) + second;
+            } else {
+                word = code + "" + last;
             }
-
-            if (str.charAt(i) == ' '){
-                charNum = 0;
-            }
-            if (charNum == 1){
-                ascii = str.charAt(i);
-                totalString = totalString + ascii;
-            }
-
-            else if (charNum == 2){
-                twoIndex = i;
-                totalString = totalString + str.charAt(lastChar);
-            }
-
-            else if (i == lastChar){
-                totalString = totalString + str.charAt(twoIndex);
-            }
-            else{
-                totalString = totalString + str.charAt(i);
-            }
-
-
+            result += word + " ";
+            start = end + 1;
+            end = str.indexOf(" ", start);
         }
-
-        return totalString;
-
+        String word = str.substring(start);
+        int code = (int) word.charAt(0);
+        char last = word.charAt(word.length() - 1);
+        if (word.length() > 2) {
+            char second = word.charAt(1);
+            word = code + "" + last + word.substring(2, word.length() - 1) + second;
+        } else {
+            word = code + "" + last;
+        }
+        result += word;
+        return result;
 
     }
 
 
 
     // 4. decipherThis
-    public static String decipherThis(String str){
-        String totalString = "";
-        String num = "";
-        int lastChar = 0;
-        int count = 0;
-        int twoIndex = 0;
+    public static String decipherThis(String str) {
+        String[] words = str.split(" ");
+        String result = "";
 
-        for (int i = 0; i < str.length(); i++){
-            count++;
-            if (str.charAt(i) == ' '){
-                count = 0;
+        for (String word : words) {
+            if ((Character.isDigit(word.charAt(2))) && word.length() == 4) {
+                int code = Integer.parseInt(word.substring(0,3));
+                char firstChar = (char) code;
+                result = result +  firstChar + word.charAt(3) + " ";
             }
-
-            for (int j = i; j < str.length(); j++){
-                if (str.charAt(j) == ' '){
-                    lastChar = j-1;
-                    break;
-                }
-                if (j == str.length()-1){
-                    lastChar = j;
-                }
+            else if ((Character.isDigit(word.charAt(2))) && word.length() == 5) {
+                int code = Integer.parseInt(word.substring(0,3));
+                char firstChar = (char) code;
+                result = result +  firstChar + word.charAt(word.length() - 1) + word.charAt(3) + " ";
+            } else if (((Character.isDigit(word.charAt(2)) && word.length() == 6))) {
+                int code = Integer.parseInt(word.substring(0,3));
+                char firstChar = (char) code;
+                result = result +  firstChar + word.charAt(word.length() - 1) + word.charAt(4) + word.charAt(3) + " ";
+            } else if (((!Character.isDigit(word.charAt(2)) && word.length() == 6))) {
+                int code = Integer.parseInt(word.substring(0,2));
+                char firstChar = (char) code;
+                result = result +  firstChar + word.charAt(word.length() - 1) + word.substring(3,5) + word.charAt(2) + " ";
+            } else if (Character.isDigit(word.charAt(2))){
+                int code = Integer.parseInt(word.substring(0,3));
+                char firstChar = (char) code;
+                result = result +  firstChar + word.charAt(word.length() - 1) + word.substring(3, word.length() - 1) + word.charAt(3) + " ";
             }
-
-            if (Character.isDigit(str.charAt(i))){
-                num = "";
-                for (int k = i; k < str.length(); k++){
-                    if (Character.isDigit(str.charAt(k))){
-                        num = num + str.charAt(k);
-                    }
-                    else{
-                        break;
-                    }
-                }
-                int ascii = Integer.parseInt(num);
-                totalString = totalString + (char) ascii;
-                i+=num.length()-1;
+            else {
+                int code = Integer.parseInt(word.substring(0,2));
+                char firstChar = (char) code;
+                result = result +  firstChar + word.charAt(word.length() - 1) + word.substring(3, word.length() - 1) + word.charAt(2) + " ";
             }
-
-            else if (count == 2){
-                twoIndex = i;
-                totalString = totalString + str.charAt(lastChar);
-            }
-
-            else if (i == lastChar){
-                totalString = totalString + str.charAt(twoIndex);
-            }
-
-            else{
-                totalString = totalString + str.charAt(i);
-            }
-
-
         }
 
-        return totalString;
+        return result.substring(0,result.length()-1);
     }
+
+}
+
 
 }
